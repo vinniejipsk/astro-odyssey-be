@@ -10,7 +10,6 @@ module.exports = {
   updateUser,
   getLoginDetails,
   logoutUser,
-  getAstros,
   getPosts,
 };
 
