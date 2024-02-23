@@ -4,7 +4,7 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 
-// var cors = require("cors");
+var cors = require("cors");
 
 require("dotenv").config();
 require("./client/mongo");
@@ -28,7 +28,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-// app.use(cors());
+app.use(cors());
 // app.use(securityMiddleware.checkJWT)
 
 app.use("/", indexRouter);
@@ -43,13 +43,23 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+  // Log the error for debugging purposes
+  console.error(err.stack);
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render("error");
+  // Determine the status code: use the error's status or default to 500
+  const statusCode = err.status || 500;
+
+  // Prepare the error response
+  const response = {
+    error: {
+      message: err.message,
+      // Include stack trace in development only for debugging
+      ...(req.app.get('env') === 'development' && { stack: err.stack }),
+    }
+  };
+
+  // Send the error response as JSON
+  res.status(statusCode).json(response);
 });
 
 module.exports = app;

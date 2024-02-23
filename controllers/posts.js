@@ -28,7 +28,7 @@ async function createPost(req, res) {
 
 async function getPosts(req, res) {
   try {
-    const posts = await modelReviews.getPosts();
+    const posts = await modelPosts.getPosts();
     res.status(200).json(posts);
   } catch (err) {
     res.status(500).json({ errorMsg: err.message });
