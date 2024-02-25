@@ -14,10 +14,10 @@ async function createPost(req, res) {
     const postData = req.body;
 
     // Validate userId
-    const user = await modelUsers.getUser(postData.userId);
-    if (!user) {
-      return res.status(400).json({ errorMsg: "Invalid user ID" });
-    }
+    // const user = await modelUsers.getUser(postData.userId);
+    // if (!user) {
+    //   return res.status(400).json({ errorMsg: "Invalid user ID" });
+    // }
 
     const post = await modelPosts.createPost(postData);
     res.status(201).json(post); // Return the created review
