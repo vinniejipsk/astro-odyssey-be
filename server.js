@@ -9,7 +9,7 @@ var cors = require("cors");
 require("dotenv").config();
 require("./client/mongo");
 
-// var securityMiddleware = require ('./middleware/security')
+var securityMiddleware = require ('./middleware/security')
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
@@ -29,7 +29,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(cors());
-// app.use(securityMiddleware.checkJWT)
+app.use(securityMiddleware.checkJWT)
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);

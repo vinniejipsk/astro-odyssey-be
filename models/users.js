@@ -1,6 +1,5 @@
 const daoUsers = require("../daos/users");
-const daoAstros = require("../daos/astros");
-const daoPosts = require("../daos/posts");
+// const daoPosts = require("../daos/posts");
 const utilSecurity = require("../util/security");
 
 module.exports = {
@@ -10,7 +9,7 @@ module.exports = {
   updateUser,
   getLoginDetails,
   logoutUser,
-  getPosts,
+  // getPosts,
 };
 
 async function createUser(body) {
@@ -45,34 +44,39 @@ async function getLoginDetails(queryFields) {
 }
 
 async function loginUser(body) {
-  if (!body.hasOwnProperty("email")) {
-    return { success: false, error: "Please type your email" };
+  try {
+    if (!body.hasOwnProperty("email")) {
+      return { success: false, error: "Please type your email" };
+    }
+    if (!body.hasOwnProperty("password")) {
+      return { success: false, error: "Please type your password" };
+    }
+  
+    const user = await daoUsers.findOne({
+      email: body.email,
+      password: body.password,
+    });
+    if (user == null || Object.keys(user).length == 0) {
+      return { success: false, error: "Invalid email/password" };
+    }
+  
+    const jwtPayload = {
+      _id: user._id,
+      user: user.name,
+      email: user.email,
+      is_admin: user.is_admin,
+    };
+    const token = utilSecurity.createJWT(jwtPayload);
+    const expiry = utilSecurity.getExpiry(token);
+    daoUsers.updateOne(
+      { email: body.email },
+      { token: token, expire_at: expiry }
+    );
+    return { success: true, data: token };
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({ errorMsg: "Internal server error" });
   }
-  if (!body.hasOwnProperty("password")) {
-    return { success: false, error: "Please type your password" };
-  }
-
-  const user = await daoUsers.findOne({
-    email: body.email,
-    password: body.password,
-  });
-  if (user == null || Object.keys(user).length == 0) {
-    return { success: false, error: "Invalid email/password" };
-  }
-
-  const jwtPayload = {
-    _id: user._id,
-    user: user.name,
-    email: user.email,
-    is_admin: user.is_admin,
-  };
-  const token = utilSecurity.createJWT(jwtPayload);
-  const expiry = utilSecurity.getExpiry(token);
-  daoUsers.updateOne(
-    { email: body.email },
-    { token: token, expire_at: expiry }
-  );
-  return { success: true, data: token };
 }
 
 async function logoutUser(body) {
@@ -91,6 +95,6 @@ function updateUser(userId, body) {
   return daoUsers.findByIdAndUpdate(userId, body, { new: true });
 }
 
-function getPosts(userId) {
-  return daoPosts.find({ userId: userId });
-}
+// function getPosts(userId) {
+//   return daoPosts.find({ userId: userId });
+// }

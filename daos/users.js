@@ -34,11 +34,6 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    astroId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Astros",
-      required: true,
-    },
   },
   {
     timestamps: true,
