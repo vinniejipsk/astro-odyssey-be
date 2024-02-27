@@ -20,7 +20,7 @@ async function createPost(req, res) {
     // }
 
     const post = await modelPosts.createPost(postData);
-    res.status(201).json(post); // Return the created review
+    res.status(201).json(post); // Return the created post
   } catch (err) {
     res.status(500).json({ errorMsg: err.message });
   }
@@ -63,7 +63,7 @@ async function updatePost(req, res) {
       return res
         .status(403)
         .json({
-          message: "Forbidden: User not authorized to update this review",
+          message: "Forbidden: User not authorized to update this post",
         });
     }
 
