@@ -19,14 +19,12 @@ const postSchema = new Schema({
   },
   locationObserve: {
     type: String,
-
   },
   visibility: {
     type: String,
   },
   magnitude: {
     type: String,
-    required: true,
   },
   description: {
     type: String,
@@ -35,6 +33,10 @@ const postSchema = new Schema({
   media: {
     type: String,
   },
+  username: {
+    type: String,
+    required: true,
+  }
 });
 
 module.exports = mongoose.model("Posts", postSchema);
