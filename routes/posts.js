@@ -8,6 +8,8 @@ var securityMiddleware = require("../middleware/security");
 router.get("/", postController.getPosts);
 // router.get("/", postController.getPosts);
 
+router.get('/search', postController.searchPosts);
+
 // GET /posts/:postId get a specific post
 router.get("/:postId", postController.getPost);
 

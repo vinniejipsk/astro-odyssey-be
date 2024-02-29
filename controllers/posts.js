@@ -4,6 +4,7 @@ const modelUsers = require("../models/users");
 module.exports = {
   createPost,
   getPosts,
+  searchPosts,
   getPost,
   updatePost,
   deletePost,
@@ -29,6 +30,24 @@ async function createPost(req, res) {
 async function getPosts(req, res) {
   try {
     const posts = await modelPosts.getPosts();
+    res.status(200).json(posts);
+  } catch (err) {
+    res.status(500).json({ errorMsg: err.message });
+  }
+}
+
+async function searchPosts(req, res) {
+  try {
+    // Check if there's a 'title' query parameter
+    const query = {};
+    if (req.query.title) {
+      // Add a filter for title using a case-insensitive regex search
+      query.title = { $regex: req.query.title, $options: 'i' };
+    }
+
+    // Pass the query object to your model's find method
+    const posts = await modelPosts.getSearchPosts(query); // Ensure your model's getPosts method can accept a query object
+
     res.status(200).json(posts);
   } catch (err) {
     res.status(500).json({ errorMsg: err.message });

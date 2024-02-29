@@ -3,6 +3,7 @@ const daoPosts = require("../daos/posts");
 module.exports = {
   createPost,
   getPosts,
+  getSearchPosts,
   getPost,
   updatePost,
   deletePost,
@@ -14,6 +15,10 @@ function createPost(param) {
 
 function getPosts() {
   return daoPosts.find({});
+}
+
+function getSearchPosts(query = {}) {
+  return daoPosts.find(query); // Use the query object in the find method
 }
 
 function getPost(postId) {
